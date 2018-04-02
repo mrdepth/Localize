@@ -9,7 +9,7 @@ Localize is the utility that is designed to simplify the work with translations.
 4. Add **External Build System** target to your project
    1. Change **SDKROOT** build setting to **macosx**
    2. Build Tool: **Localize/localize.sh**
-   3. Arguments: **-spreadsheet *<spreadsheetID>* [-languages "de es fr it ja ko nl pt-BR pt ru"]  -clientID *clientID* -clientSecret *clientSecret***
+   3. Arguments: **-spreadsheet *spreadsheetID* [-languages "de es fr it ja ko nl pt-BR pt ru"]  -clientID *clientID* -clientSecret *clientSecret***
   
     > You can find spreadsheetID in the Google Sheet's url
     > docs.google.com/spreadsheets/d/**1ebxmnfNck3IRrTPDXXX_XXbKoSMooMfMSz54RAn8XTCC4**/edit#gid=0

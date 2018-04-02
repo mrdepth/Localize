@@ -11,6 +11,6 @@ Localize is the utility that is designed to simplify the work with translations.
 4.2. Build Tool: **Localize/localize.sh**
 4.3. Arguments: **-spreadsheet *<spreadsheetID>* [-languages "de es fr it ja ko nl pt-BR pt ru"]  -clientID *<clientID>* -clientSecret *<clientSecret>***
 > You can find spreadsheetID in the Google Sheet's url
-> https://docs.google.com/spreadsheets/d/**1ebxmnfNck3IRrTPDXXX_XXbKoSMooMfMSz54RAn8XTCC4**/edit#gid=0
+> docs.google.com/spreadsheets/d/**1ebxmnfNck3IRrTPDXXX_XXbKoSMooMfMSz54RAn8XTCC4**/edit#gid=0
 
 You can now build this target to sync translations with Google Sheets

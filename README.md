@@ -1,6 +1,6 @@
 # Localize
 
-Localize is the utility that is designed to simplify the work with translations. Localize is embedded in the XCode project as a separate target and synchronizes the translations with Google Sheet.
+Localize is the utility that is designed to simplify the work with translations for iOS and OS X. Localize is embedded in the Xcode project as a separate target and synchronizes the translations with Google Sheet.
 
 ### Installation
 1. Turn on the Google Sheets API https://developers.google.com/sheets/api/quickstart/ios?authuser=1

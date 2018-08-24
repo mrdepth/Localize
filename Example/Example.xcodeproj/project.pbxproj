@@ -119,7 +119,7 @@
 /* Begin PBXLegacyTarget section */
 		12824ADB207213B600A3DD28 /* localize */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "-spreadsheet <spreadsheetID> -languages \"de es fr it ja ko nl pt-BR pt ru\"  -clientID <clientID> -clientSecret <clientSecret>";
+			buildArgumentsString = "-spreadsheet <spreadsheetID> [-languages \"<ISO_CODES>\"]-clientID <google_client_id> -clientSecret <google_client_secret> [-info <Info.plist>]";
 			buildConfigurationList = 12824ADC207213B600A3DD28 /* Build configuration list for PBXLegacyTarget "localize" */;
 			buildPhases = (
 			);

@@ -105,20 +105,20 @@ extension Array where Element == XLIFF {
 
 extension XLIFF.File.TransUnit {
 	func updateIfNeeded(target: String, note: String?) -> Bool {
-		guard self.target != target else {return false}
+		guard self.target != target || self.note != note else {return false}
 		(element.elements(forName: "target").first ?? {
-			let target = XMLElement(name: "target")
-			element.addChild(target)
-			return target
+			let node = XMLElement(name: "target")
+			element.addChild(node)
+			return node
 		}()).stringValue = target
 		self.target = target
 
 		if let note = note {
 			(element.elements(forName: "note").first ?? {
-				let target = XMLElement(name: "note")
-				element.addChild(target)
-				return target
-				}()).stringValue = target
+				let node = XMLElement(name: "note")
+				element.addChild(node)
+				return node
+				}()).stringValue = note
 			self.note = note
 		}
 		return true

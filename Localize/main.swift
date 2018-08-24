@@ -8,17 +8,15 @@
 
 import Foundation
 // Usage:
-// Localize -spreadsheet spreadsheetID -clientID google_client_id -clientSecret google_client_secret
+// Localize -spreadsheet <spreadsheetID> [-languages "<ISO_CODES>"]-clientID <google_client_id> -clientSecret <google_client_secret> [-info <Info.plist>]
 
 // Turn on the Google Sheets API
 // Google Sheets guide: https://developers.google.com/sheets/api/quickstart/ios
 // Google APIsConsle: https://console.developers.google.com/apis/credentials
 
-
 let projectPath: String! = ProcessInfo.processInfo.environment["PROJECT_FILE_PATH"]
 let projectDir: String! = ProcessInfo.processInfo.environment["PROJECT_DIR"]
 let tempDir: String! = ProcessInfo.processInfo.environment["TEMP_DIR"]
-//let action = ProcessInfo.processInfo.environment["ACTION"]
 
 guard projectPath != nil && projectDir != nil && tempDir != nil else {
 	print("error: run in projects target")
@@ -50,8 +48,18 @@ let languages = commandLineArguments["-languages"]?.split(separator: " ").map({S
 	}
 	.map { url in url.deletingPathExtension().lastPathComponent }
 
+var currentVersion: String?
 
-
+if let infoPath = commandLineArguments["-info"] {
+	do {
+		let info = (try PropertyListSerialization.propertyList(from: Data(contentsOf: URL.init(fileURLWithPath: infoPath)), options: [], format: nil)) as? [String: Any]
+		currentVersion = info?["CFBundleVersion"] as? String
+	}
+	catch {
+		print("error: unable to find Info.plist at \"\(infoPath)\"")
+		exit(EXIT_FAILURE)
+	}
+}
 
 func authorize() -> Future<GTMAppAuthFetcherAuthorization> {
 	let promise = Promise<GTMAppAuthFetcherAuthorization>()
@@ -84,6 +92,7 @@ func authorize() -> Future<GTMAppAuthFetcherAuthorization> {
 }
 
 enum Header: String {
+	case version
 	case note
 	case file
 	case id
@@ -91,7 +100,7 @@ enum Header: String {
 }
 
 let kUnused = "<Unused>"
-let predefinedHeaders = [Header.note.rawValue, Header.file.rawValue, Header.id.rawValue, Header.source.rawValue]
+let predefinedHeaders = [Header.version.rawValue, Header.note.rawValue, Header.file.rawValue, Header.id.rawValue, Header.source.rawValue]
 
 enum LocalizeError: Error {
 	case invalidSpreadsheetsContent
@@ -159,6 +168,7 @@ authorize().then(on: .global(qos: .utility)) { auth in
 	
 	var modifiedLanguages = Set<String>()
 	var unusedUnits = Set<Int>()
+	var usedUnits = Set<Int>()
 	var hasErrors = false
 	let spreadsheetValues = (spreadsheet.values as? [[String]])?[1...].map{$0}
 	
@@ -186,6 +196,7 @@ authorize().then(on: .global(qos: .utility)) { auth in
 						}
 						if transUnit.updateIfNeeded(target: target, note: note) {
 							modifiedLanguages.insert(language)
+							usedUnits.insert(index)
 						}
 						isUnused = false
 					}
@@ -194,7 +205,7 @@ authorize().then(on: .global(qos: .utility)) { auth in
 					
 				}
 			}
-			else if let source = source {
+			/*else if let source = source {
 				translations.forEach { (language, target) in
 					let transUnits = xliffs.transUnits(source: source, language: language)
 					guard !transUnits.isEmpty else {return}
@@ -205,7 +216,7 @@ authorize().then(on: .global(qos: .utility)) { auth in
 					}
 					isUnused = false
 				}
-			}
+			}*/
 			if isUnused {
 				unusedUnits.insert(index)
 			}
@@ -217,7 +228,13 @@ authorize().then(on: .global(qos: .utility)) { auth in
 
 	var update = [GTLRSheets_ValueRange]()
 	let headers = (spreadsheet.values?.first as? [String])?.appending(missingTranslations) ?? predefinedHeaders.appending(localTranslations.sorted())
-	let xliffsValues = xliffs.spreadsheetValues(headers: headers)
+	var xliffsValues = xliffs.spreadsheetValues(headers: headers)
+	
+	if let currentVersion = currentVersion, let column = headers.index(of: Header.version.rawValue) {
+		for i in xliffsValues.indices {
+			xliffsValues[i][column] = currentVersion
+		}
+	}
 	
 	if spreadsheet.values?.isEmpty != false { //Initial
 		let range = GTLRSheets_ValueRange()
@@ -273,6 +290,18 @@ authorize().then(on: .global(qos: .utility)) { auth in
 				range.majorDimension = kGTLRSheetsMajorDimensionRows
 				range.range = "\(Address(row: i + 1, column: column))"
 				range.values = [[kUnused]]
+				return range
+			}
+		)
+	}
+	if let currentVersion = currentVersion, let column = headers.index(of: Header.version.rawValue) {
+		update.append(contentsOf:
+			usedUnits.compactMap { i -> GTLRSheets_ValueRange? in
+				guard spreadsheetValues?[i].column(name: Header.version.rawValue, headers: headers) != currentVersion else {return nil}
+				let range = GTLRSheets_ValueRange()
+				range.majorDimension = kGTLRSheetsMajorDimensionRows
+				range.range = "\(Address(row: i + 1, column: column))"
+				range.values = [[currentVersion]]
 				return range
 			}
 		)

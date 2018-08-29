@@ -607,7 +607,6 @@
 					126CE662206B935B0063E19E = {
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 0920;
-						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -904,8 +903,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = YB4RLQ4M9A;
+				DEVELOPMENT_TEAM = HK7V8DK48P;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"GTLR_BUILT_AS_FRAMEWORK=0",
 					GTMAPPAUTH_USER_IMPORTS,
@@ -918,6 +916,7 @@
 					"$(BUILT_PRODUCTS_DIR)/libAppAuth-macOS.a",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Localize/Localize-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
@@ -928,8 +927,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = YB4RLQ4M9A;
+				DEVELOPMENT_TEAM = HK7V8DK48P;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"GTLR_BUILT_AS_FRAMEWORK=1",
 					GTMAPPAUTH_USER_IMPORTS,
@@ -940,6 +938,7 @@
 					"$(BUILT_PRODUCTS_DIR)/libAppAuth-macOS.a",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Localize/Localize-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 			};

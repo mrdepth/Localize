@@ -1,3 +1,9 @@
 [submodule "ThirdParty/GoogleAPI"]
 	path = ThirdParty/GoogleAPI
 	url = https://github.com/google/google-api-objectivec-client-for-rest.git
+[submodule "ThirdParty/GTMAppAuth"]
+	path = ThirdParty/GTMAppAuth
+	url = ../../google/GTMAppAuth.git
+[submodule "ThirdParty/AppAuth-iOS"]
+	path = ThirdParty/AppAuth-iOS
+	url = ../../openid/AppAuth-iOS.git

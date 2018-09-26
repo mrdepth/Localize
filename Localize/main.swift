@@ -113,7 +113,7 @@ func loadXLIFFs() -> Future<[XLIFF]> {
 		
 		return try languages?.map { language -> XLIFF in
 			shell("xcodebuild", "-exportLocalizations", "-localizationPath", tempDir, "-project", projectPath, "-exportLanguage", language)
-			let url = URL(fileURLWithPath: tempDir).appendingPathComponent("\(language).xliff")
+			let url = URL(fileURLWithPath: tempDir).appendingPathComponent("\(language).xcloc/Localized Contents/\(language).xliff")
 			return try XLIFF(contentsOf: url)
 		} ?? []
 	}
@@ -338,6 +338,8 @@ authorize().then(on: .global(qos: .utility)) { auth in
 	if !cmd.isEmpty {
 		shell("bash", "-c", "\(cmd) &")
 	}
+}.catch(on: .main) { error in
+	print("error: \(error)")
 }.finally(on: .main) {
 	isFinished = true
 }

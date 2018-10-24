@@ -326,13 +326,23 @@ authorize().then(on: .global(qos: .utility)) { auth in
 		promise.future.wait()
 	}
 	
+	let regex = try! NSRegularExpression(pattern: "<trans-unit id=\"(.*?)\">", options: [NSRegularExpression.Options.dotMatchesLineSeparators])
+	
 	let cmd = try modifiedLanguages.compactMap { language in
 		xliffs.first {$0.files.first?.targetLanguage == language}
 	}.map { xliff in
-		let data = xliff.document.xmlData
+
+		let s = NSMutableString(string: xliff.document.xmlString)
+		for mach in regex.matches(in: s as String, options: [], range: NSMakeRange(0, s.length)).reversed() {
+			let r = mach.range(at: 1)
+			let id = s.substring(with: r).replacingOccurrences(of: "\n", with: "&#10;")
+			s.replaceCharacters(in: r, with: id)
+		}
+		
+		let data = (s as String).data(using: .utf8)!
 		try data.write(to: xliff.url)
 		
-		return "xcodebuild -importLocalizations -localizationPath \"\(xliff.url.path)\" -project \"\(projectPath!)\""
+		return "xcodebuild -importLocalizations -localizationPath \"\(xliff.url.deletingLastPathComponent().deletingLastPathComponent().path)\" -project \"\(projectPath!)\""
 	}.joined(separator: " && ")
 	
 	if !cmd.isEmpty {
@@ -346,3 +356,6 @@ authorize().then(on: .global(qos: .utility)) { auth in
 
 while !isFinished && RunLoop.current.run(mode: .defaultRunLoopMode, before: .distantFuture) {
 }
+
+
+
